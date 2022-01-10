@@ -7,7 +7,7 @@ import org.ticketing.AutomatedTicketingSystem.Model.DeliveryDetails;
 import org.ticketing.AutomatedTicketingSystem.Model.Tickets;
 import org.ticketing.AutomatedTicketingSystem.Repository.DeliveryDetailsRepository;
 
-import java.util.Calendar;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -17,14 +17,16 @@ import java.util.List;
 public class DeliveryDetailsService {
 
     private final DeliveryDetailsRepository deliveryDetailsRepository;
+    private final TicketsService ticketsService;
 
     /**
      * Instantiates a new Delivery details service.
      *
      * @param deliveryDetailsRepository the delivery details repository
      */
-    public DeliveryDetailsService(DeliveryDetailsRepository deliveryDetailsRepository) {
+    public DeliveryDetailsService(DeliveryDetailsRepository deliveryDetailsRepository, TicketsService ticketsService) {
         this.deliveryDetailsRepository = deliveryDetailsRepository;
+        this.ticketsService = ticketsService;
     }
 
     /**
@@ -51,19 +53,26 @@ public class DeliveryDetailsService {
      */
     public ResponseEntity<Object> saveDeliveryDetails(DeliveryDetails deliveryDetails) {
         try {
+            LocalTime t1 = LocalTime.of(deliveryDetails.getExpected_delivery_time().getHour(), deliveryDetails.getExpected_delivery_time().getMinute());
+            LocalTime t2 = LocalTime.of(deliveryDetails.getTime_to_reach_destination().getHour(), deliveryDetails.getTime_to_reach_destination().getMinute());
+            LocalTime total = t1.plusHours(t2.getHour()).plusMinutes(t2.getMinute());
+
+
             Tickets tickets = new Tickets();
-            Calendar date = Calendar.getInstance();
             if (deliveryDetails.getCustomer_type().equals("VIP")) {
                 tickets.setPriority(3); //High priority over other customers = 3
                 tickets.setDeliveryDetails(deliveryDetails);
+                ticketsService.save(tickets);
                 return ResponseEntity.accepted().body(tickets);
-            } else if (deliveryDetails.getExpected_delivery_time().after(date.getTime())) {
+            } else if (deliveryDetails.getExpected_delivery_time().isAfter(LocalTime.now())) {
                 tickets.setPriority(2); //Priority higher than others = 2
                 tickets.setDeliveryDetails(deliveryDetails);
+                ticketsService.save(tickets);
                 return ResponseEntity.accepted().body(tickets);
-            } else if (deliveryDetails.getTime_to_reach_destination().after(deliveryDetails.getExpected_delivery_time())) {
+            } else if (deliveryDetails.getTime_to_reach_destination().isAfter(deliveryDetails.getExpected_delivery_time())) {
                 tickets.setPriority(1); //Normal Priority = 1
                 tickets.setDeliveryDetails(deliveryDetails);
+                ticketsService.save(tickets);
                 return ResponseEntity.accepted().body(tickets);
             }
             return ResponseEntity.badRequest().body(deliveryDetails);

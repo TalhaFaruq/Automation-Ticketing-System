@@ -1,19 +1,18 @@
 package org.ticketing.AutomatedTicketingSystem.Model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.sql.Time;
+import java.time.LocalTime;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 public class DeliveryDetails {
     @Id
@@ -21,8 +20,8 @@ public class DeliveryDetails {
     private int delivery_id;
     private String customer_type;
     private String delivery_status;
-    private Time expected_delivery_time;
+    private LocalTime expected_delivery_time;
     private int current_distance_from_destination_in_meters;
-    private Time time_to_reach_destination;
+    private LocalTime time_to_reach_destination;
 
 }

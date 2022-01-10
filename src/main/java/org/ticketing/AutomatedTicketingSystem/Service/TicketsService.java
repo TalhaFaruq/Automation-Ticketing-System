@@ -38,4 +38,19 @@ public class TicketsService {
             return ResponseEntity.badRequest().body(e);
         }
     }
+
+    /**
+     * Save response entity.
+     *
+     * @param ticket the ticket
+     * @return the response entity
+     */
+    public ResponseEntity<Object> save(Tickets ticket){
+        try {
+            ticketsRepository.save(ticket);
+            return ResponseEntity.accepted().body(ticket);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
 }

@@ -10,15 +10,28 @@ import org.ticketing.AutomatedTicketingSystem.Repository.DeliveryDetailsReposito
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * The type Delivery details service.
+ */
 @Service
 public class DeliveryDetailsService {
 
     private final DeliveryDetailsRepository deliveryDetailsRepository;
 
+    /**
+     * Instantiates a new Delivery details service.
+     *
+     * @param deliveryDetailsRepository the delivery details repository
+     */
     public DeliveryDetailsService(DeliveryDetailsRepository deliveryDetailsRepository) {
         this.deliveryDetailsRepository = deliveryDetailsRepository;
     }
 
+    /**
+     * List delivery details response entity.
+     *
+     * @return the response entity
+     */
     public ResponseEntity<Object> listDeliveryDetails() {
         try {
             List<DeliveryDetails> deliveryDetails = deliveryDetailsRepository.findAll();
@@ -30,6 +43,12 @@ public class DeliveryDetailsService {
         }
     }
 
+    /**
+     * Save delivery details response entity.
+     *
+     * @param deliveryDetails the delivery details
+     * @return the response entity
+     */
     public ResponseEntity<Object> saveDeliveryDetails(DeliveryDetails deliveryDetails) {
         try {
             Tickets tickets = new Tickets();

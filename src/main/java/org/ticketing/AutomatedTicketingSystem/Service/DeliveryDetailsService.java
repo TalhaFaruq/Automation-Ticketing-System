@@ -53,7 +53,7 @@ public class DeliveryDetailsService {
      */
     public ResponseEntity<Object> saveDeliveryDetails(DeliveryDetails deliveryDetails) {
         try {
-            LocalTime t1 = LocalTime.of(deliveryDetails.getExpected_delivery_time().getHour(), deliveryDetails.getExpected_delivery_time().getMinute());
+            LocalTime t1 = LocalTime.of(00, 30); //Time to prepare food
             LocalTime t2 = LocalTime.of(deliveryDetails.getTime_to_reach_destination().getHour(), deliveryDetails.getTime_to_reach_destination().getMinute());
             LocalTime total = t1.plusHours(t2.getHour()).plusMinutes(t2.getMinute());
 
@@ -69,7 +69,7 @@ public class DeliveryDetailsService {
                 tickets.setDeliveryDetails(deliveryDetails);
                 ticketsService.save(tickets);
                 return ResponseEntity.accepted().body(tickets);
-            } else if (deliveryDetails.getTime_to_reach_destination().isAfter(deliveryDetails.getExpected_delivery_time())) {
+            } else if (total.isAfter(deliveryDetails.getExpected_delivery_time())) {
                 tickets.setPriority(1); //Normal Priority = 1
                 tickets.setDeliveryDetails(deliveryDetails);
                 ticketsService.save(tickets);
